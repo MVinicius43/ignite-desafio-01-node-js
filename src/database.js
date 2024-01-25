@@ -19,8 +19,26 @@ export class Database {
     fs.writeFile(databasePath, JSON.stringify(this.#database))
   }
 
-  select(table) {
-    const data = this.#database[table] ?? []
+  select(table, query) {
+    let data = this.#database[table] ?? []
+
+    if (query) {
+      const { title, description } = query
+
+      data = data.filter(row => {
+        const editedTitle = title?.replace('%20', ' ')
+        const editedDescription = description?.replace('%20', ' ')
+
+        if (editedTitle && editedDescription &&
+          row.title.includes(editedTitle) && row.description.includes(editedDescription)) {
+            return row
+        }
+
+        if (row.title.includes(editedTitle) || row.description.includes(editedDescription)) {
+          return row
+        }
+      })
+    }
     
     return data
   }
