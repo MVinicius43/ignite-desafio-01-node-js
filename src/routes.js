@@ -1,6 +1,9 @@
 import { Database } from "./database.js";
 import { randomUUID } from 'node:crypto'
 import { buildRoutePath } from "./utils/build-route-path.js";
+import { formatCSV } from "./utils/format-csv.js";
+
+export const tasksFile = new URL('../tasks.csv', import.meta.url)
 
 const database = new Database()
 
@@ -22,7 +25,7 @@ export const routes = [
   {
     method: 'POST',
     path: buildRoutePath('/tasks'),
-    handler: (req, res) => {
+    handler: async (req, res) => {
       const { title, description } = req.body
 
       const task = {
